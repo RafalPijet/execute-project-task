@@ -15,7 +15,7 @@ export interface AddLaunchAction extends Action<typeof ADD_LAUNCH> {
     payload: Launch
 }
 export interface SetSelectedLaunchAction extends Action<typeof SET_SELECTED_LAUNCH> {
-    payload: Launch
+    payload: Launch | null
 }
 
 //CREATORS OF ACTIONS
@@ -27,7 +27,7 @@ export const addLaunch = (launch: Launch): AddLaunchAction => ({
     type: ADD_LAUNCH,
     payload: launch
 })
-export const setLaunch = (launch: Launch): SetSelectedLaunchAction => ({
+export const setLaunch = (launch: Launch | null): SetSelectedLaunchAction => ({
     type: SET_SELECTED_LAUNCH,
     payload: launch
 })

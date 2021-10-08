@@ -28,7 +28,7 @@ const launchesReducer = (
         case ADD_LAUNCH:
             return { ...state, launches: [...state.launches, action.payload] }
         case SET_SELECTED_LAUNCH:
-            return { ...state, selectedLaunches: action.payload }
+            return { ...state, selectedLaunch: action.payload }
         default:
             return { ...state }
     }

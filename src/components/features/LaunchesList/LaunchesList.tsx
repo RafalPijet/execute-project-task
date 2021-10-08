@@ -15,7 +15,7 @@ const LaunchesList: React.FC = () => {
     <Grid container className={classes.root}>
       {isSuccess ? (
         launches.map((item: Launch) => {
-          return <LaunchItem key={item.id} launch={item} />;
+          return <LaunchItem key={item.id} launch={item} isContent={false} />;
         })
       ) : (
         <CircularProgress className={classes.spiner} />

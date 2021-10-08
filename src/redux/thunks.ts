@@ -9,7 +9,7 @@ import {
     stopRequest,
     errorRequest,
 } from './actions/requestActions';
-import { LoadLaunchesAction, AddLaunchAction, loadLaunches, addLaunch } from './actions/launchesActions';
+import { LoadLaunchesAction, AddLaunchAction, SetSelectedLaunchAction, loadLaunches, addLaunch, setLaunch } from './actions/launchesActions';
 import { Launch, Ship } from '../globalTypes';
 
 export const getLaunchesRequest = (page: number): ThunkAction<
@@ -65,3 +65,10 @@ export const getLaunchesRequest = (page: number): ThunkAction<
         }
     }
 }
+
+export const addLaunchToFavorites = (): ThunkAction<
+    Promise<void>,
+    any,
+    RootState,
+    SetSelectedLaunchAction
+> => async (dispatch, getState) => { }

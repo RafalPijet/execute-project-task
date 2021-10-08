@@ -8,14 +8,15 @@ import { useStyles, Props } from './LaunchItemStyle';
 
 const LaunchItem: React.FC<Props> = (props) => {
   const { name, date, images, description } = props.launch;
+  const { isContent, launch } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const dateFormat = new Date(date).toLocaleString();
   const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
   const selectItemHandling = () => {
-    dispatch(setLaunch(props.launch));
-    setIsRedirect(true);
+    dispatch(setLaunch(launch));
+    setTimeout(() => setIsRedirect(true), 500);
   };
 
   if (isRedirect) {
@@ -41,19 +42,20 @@ const LaunchItem: React.FC<Props> = (props) => {
                 {name}
               </Typography>
               <Typography align="left" className={classes.description}>
-                {cutText(description, 400)}
+                {isContent ? description : cutText(description, 400)}
               </Typography>
             </div>
-
-            <div className={classes.rowCenter}>
-              <Button
-                className={classes.button}
-                variant="outlined"
-                onClick={selectItemHandling}
-              >
-                Read more
-              </Button>
-            </div>
+            {!isContent && (
+              <div className={classes.rowCenter}>
+                <Button
+                  className={classes.button}
+                  variant="outlined"
+                  onClick={selectItemHandling}
+                >
+                  Read more
+                </Button>
+              </div>
+            )}
           </Grid>
         </Grid>
       </Paper>

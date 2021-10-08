@@ -83,5 +83,16 @@ export const useStyles = makeStyles(() => createStyles({
     },
     disabled: {
         backgroundColor: `${disabledColor} !important`
+    },
+    addButton: {
+        backgroundColor: secondaryColor,
+        marginRight: 10,
+        '&:hover': {
+            backgroundColor: '#fff'
+        }
     }
 }))
+
+export interface Props {
+    isContent: boolean;
+}

@@ -54,5 +54,6 @@ export const useStyles = makeStyles(() => createStyles({
 }))
 
 export interface Props {
-    launch: Launch
+    launch: Launch;
+    isContent: boolean;
 }
