@@ -1,12 +1,15 @@
 import { ReactNode } from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { container } from '../../../globalStyles'
 
 export const useStyles = makeStyles(() => createStyles({
+    container: {
+        ...container,
+    },
     root: {
         display: 'flex',
         flexDirection: 'column',
-        height: "2000px",
-        maxHeight: "2000px",
+        minHeight: "1500px",
         overflow: "hidden",
         position: "relative",
         backgroundPosition: "top center",
@@ -18,16 +21,6 @@ export const useStyles = makeStyles(() => createStyles({
         "&:before": {
             background: "rgba(0, 0, 0, 0.2)"
         },
-        "&:after,&:before": {
-            position: "absolute",
-            zIndex: "1",
-            width: "100%",
-            height: "100%",
-            display: "block",
-            left: "0",
-            top: "0",
-            content: "''"
-        }
     },
 }))
 

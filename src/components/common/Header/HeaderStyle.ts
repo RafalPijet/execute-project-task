@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { container, primaryColor, secondaryColor } from '../../../globalStyles';
+import { container, primaryColor, secondaryColor, disabledColor } from '../../../globalStyles';
 
 export const useStyles = makeStyles(() => createStyles({
     root: {
@@ -16,7 +16,7 @@ export const useStyles = makeStyles(() => createStyles({
         position: 'absolute',
         top: '2px',
         textTransform: 'uppercase',
-        fontSize: '12px',
+        fontSize: '10px',
         fontWeight: 600,
     },
     searchButton: {
@@ -80,5 +80,8 @@ export const useStyles = makeStyles(() => createStyles({
         width: '30vw',
         height: '100vh',
         backgroundColor: secondaryColor,
+    },
+    disabled: {
+        backgroundColor: `${disabledColor} !important`
     }
 }))

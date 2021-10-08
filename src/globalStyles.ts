@@ -26,10 +26,12 @@ const container = {
 
 const primaryColor = '#6A0572';
 const secondaryColor = '#34FFC8';
+const disabledColor = '#9991af';
 
 export {
     containerFluid,
     container,
     primaryColor,
-    secondaryColor
+    secondaryColor,
+    disabledColor
 }
