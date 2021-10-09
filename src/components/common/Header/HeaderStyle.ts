@@ -71,13 +71,14 @@ export const useStyles = makeStyles(() => createStyles({
         borderRadius: 'unset',
     },
     favoritesContent: {
+        padding: 20,
         transitionProperty: 'all',
         transition: '.3s',
-        transformOrigin: '45% 5%',
+        transformOrigin: '39% 5%',
         position: 'absolute',
         right: '-15vw',
         top: 0,
-        width: '30vw',
+        width: '25vw',
         height: '100vh',
         backgroundColor: secondaryColor,
     },
@@ -90,7 +91,13 @@ export const useStyles = makeStyles(() => createStyles({
         '&:hover': {
             backgroundColor: '#fff'
         }
-    }
+    },
+    favoritesDescription: {
+        marginTop: '100px !important',
+        color: '#000',
+        fontFamily: 'Roboto',
+        fontSize: 34,
+    },
 }))
 
 export interface Props {

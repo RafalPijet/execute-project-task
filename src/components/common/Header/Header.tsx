@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Grid, FilledInput, IconButton } from '@material-ui/core';
 import {
   Popper,
@@ -8,24 +8,37 @@ import {
   Paper,
   MenuList,
   ClickAwayListener,
+  Typography,
 } from '@mui/material';
 import { Search, Add, FavoriteBorder } from '@material-ui/icons';
 import AppBar from '@material-ui/core/AppBar';
 import SelectMenuItem from '../SelectMenuItem/SelectMenuItem';
 import { getPending } from '../../../redux/actions/requestActions';
-import { getLaunches } from '../../../redux/actions/launchesActions';
+import {
+  getLaunches,
+  getFavoriteLaunches,
+  getSelectedLaunch,
+} from '../../../redux/actions/launchesActions';
+import {
+  addLaunchToFavorites,
+  getFavoritesLaunchesFromLocalStorage,
+} from '../../../redux/thunks';
 import { useStyles, Props } from './HeaderStyle';
 import { Launch } from '../../../globalTypes';
 
 const Header: React.FC<Props> = (props) => {
   const { isContent } = props;
   const classes = useStyles();
+  const dispatch = useDispatch();
   const isPending = useSelector(getPending);
   const launches = useSelector(getLaunches);
+  const favorites = useSelector(getFavoriteLaunches);
+  const selectedLaunch = useSelector(getSelectedLaunch);
   const [isSearch, setIsSearch] = useState<boolean>(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedLaunches, setSelectedLaunches] = useState<Launch[]>([]);
+  const [addIsDisabled, setAddIsDisabled] = useState<boolean>(false);
 
   const searchButtonClasses = classNames({
     [classes.searchButton]: true,
@@ -44,6 +57,25 @@ const Header: React.FC<Props> = (props) => {
     [classes.favoritesContentOpen]: isFavoritesOpen,
     [classes.favoritesContentClose]: !isFavoritesOpen,
   });
+
+  const addButtonClasses = classNames({
+    [classes.addButton]: true,
+    [classes.disabled]: addIsDisabled,
+  });
+
+  useEffect(() => {
+    dispatch(getFavoritesLaunchesFromLocalStorage());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (selectedLaunch !== null) {
+      const result = favorites.find(
+        (item: Launch) => item.id === selectedLaunch.id
+      );
+      setAddIsDisabled(result !== undefined || favorites.length >= 10);
+    }
+  }, [selectedLaunch, favorites]);
 
   useEffect(() => {
     setSelectedLaunches(launches);
@@ -73,6 +105,12 @@ const Header: React.FC<Props> = (props) => {
         item.name.toLowerCase().includes(event.target.value.toLowerCase())
       );
       setSelectedLaunches(result);
+    }
+  };
+
+  const addToLocalStorageHandling = () => {
+    if (isContent) {
+      dispatch(addLaunchToFavorites());
     }
   };
 
@@ -162,7 +200,12 @@ const Header: React.FC<Props> = (props) => {
           className={classes.favoritesButtonBox}
         >
           {isContent && (
-            <IconButton size="small" className={classes.addButton}>
+            <IconButton
+              size="small"
+              className={addButtonClasses}
+              onClick={addToLocalStorageHandling}
+              disabled={addIsDisabled}
+            >
               <Add />
             </IconButton>
           )}
@@ -177,7 +220,22 @@ const Header: React.FC<Props> = (props) => {
               <FavoriteBorder />
             )}
           </IconButton>
-          <div className={favoritesContentClasses}></div>
+          <div className={favoritesContentClasses}>
+            <Typography variant="h4" className={classes.favoritesDescription}>
+              FAVORITES
+            </Typography>
+            <MenuList>
+              {favorites.map((item: Launch) => {
+                return (
+                  <SelectMenuItem
+                    key={item.id}
+                    launch={item}
+                    isFavorites={true}
+                  />
+                );
+              })}
+            </MenuList>
+          </div>
         </Grid>
       </Grid>
     </AppBar>

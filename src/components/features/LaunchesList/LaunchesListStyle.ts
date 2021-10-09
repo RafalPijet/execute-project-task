@@ -4,9 +4,11 @@ import { secondaryColor } from '../../../globalStyles'
 export const useStyles = makeStyles(() => createStyles({
     root: {
         marginTop: 100,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        minHeight: '100vh',
+        alignItems: 'center'
     },
     spiner: {
         color: secondaryColor
-    }
+    },
 }))

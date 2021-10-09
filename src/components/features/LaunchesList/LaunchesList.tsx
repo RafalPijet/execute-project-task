@@ -11,6 +11,7 @@ const LaunchesList: React.FC = () => {
   const classes = useStyles();
   const isSuccess = useSelector(getSuccess);
   const launches = useSelector(getLaunches);
+
   return (
     <Grid container className={classes.root}>
       {isSuccess ? (

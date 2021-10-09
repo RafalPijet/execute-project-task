@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { Paper, Typography, Grid, Button } from '@material-ui/core';
 import { cutText } from '../../../functions';
 import { setLaunch } from '../../../redux/actions/launchesActions';
 import { useStyles, Props } from './LaunchItemStyle';
+import noImage from '../../../images/noImage.png';
 
 const LaunchItem: React.FC<Props> = (props) => {
   const { name, date, images, description } = props.launch;
@@ -32,17 +33,23 @@ const LaunchItem: React.FC<Props> = (props) => {
               <div
                 className={classes.imageBox}
                 style={{
-                  backgroundImage: `url(${images[0].image})`,
+                  backgroundImage: `url(${
+                    images.length ? images[0].image : noImage
+                  })`,
                 }}
               ></div>
               <Typography align="left" className={classes.date}>
                 {dateFormat.substring(0, 10)}
               </Typography>
               <Typography align="left" className={classes.name}>
-                {name}
+                {name !== null && name.length ? name : "Name isn't available"}
               </Typography>
               <Typography align="left" className={classes.description}>
-                {isContent ? description : cutText(description, 400)}
+                {description !== null && description.length
+                  ? isContent
+                    ? description
+                    : cutText(description, 400)
+                  : "Description isn't available"}
               </Typography>
             </div>
             {!isContent && (

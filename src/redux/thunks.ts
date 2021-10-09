@@ -9,21 +9,32 @@ import {
     stopRequest,
     errorRequest,
 } from './actions/requestActions';
-import { LoadLaunchesAction, AddLaunchAction, SetSelectedLaunchAction, loadLaunches, addLaunch, setLaunch } from './actions/launchesActions';
-import { Launch, Ship } from '../globalTypes';
+import {
+    LoadLaunchesAction,
+    AddLaunchAction,
+    SetSelectedLaunchAction,
+    ResetLaunchesAction,
+    loadLaunches,
+    addLaunch,
+    setLaunch,
+    resetLaunches
+} from './actions/launchesActions';
+import { Launch } from '../globalTypes';
 
 export const getLaunchesRequest = (page: number): ThunkAction<
     Promise<void>,
     any,
     RootState,
-    StartRequestAction | StopRequestAction | ErrorRequestAction | AddLaunchAction
+    StartRequestAction | StopRequestAction | ErrorRequestAction |
+    AddLaunchAction | ResetLaunchesAction
 > => async (dispatch, getState) => {
     dispatch(startRequest());
+    dispatch(resetLaunches([]));
 
     try {
         // await new Promise(resolve => setTimeout(resolve, 5000))
         const res: AxiosResponse = await axios.get(
-            `https://api.spacex.land/rest/launches?limit=6&offset=${page * 10}`
+            `https://api.spacex.land/rest/launches?limit=6&offset=${page * 2}`
         );
         let fetchedData: any[] = res.data;
         if (fetchedData) {
@@ -38,6 +49,7 @@ export const getLaunchesRequest = (page: number): ThunkAction<
             });
             result.forEach(async (item: Launch) => {
                 if (item.images.length) {
+                    await new Promise(resolve => setTimeout(resolve, 300))
                     const response: AxiosResponse = await axios.get(
                         `https://api.spacex.land/rest/ship/${item.images[0].id}`
                     );
@@ -51,6 +63,8 @@ export const getLaunchesRequest = (page: number): ThunkAction<
                         item.images = [image];
                         dispatch(addLaunch(item))
                     }
+                } else {
+                    dispatch(addLaunch(item))
                 }
             })
         }
@@ -70,5 +84,61 @@ export const addLaunchToFavorites = (): ThunkAction<
     Promise<void>,
     any,
     RootState,
-    SetSelectedLaunchAction
-> => async (dispatch, getState) => { }
+    ErrorRequestAction
+> => async (dispatch, getState) => {
+    const stringFavorites = localStorage.getItem('launchesStorage');
+    if (stringFavorites !== null) {
+        let favorites: Launch[] = JSON.parse(stringFavorites);
+        if (favorites.length < 10) {
+            const currentLaunch = getState().launches.selectedLaunch
+            const result = favorites.find((item: Launch) => item.id === currentLaunch.id);
+            if (result === undefined) {
+                favorites = [
+                    ...favorites,
+                    currentLaunch,
+                ];
+                localStorage.setItem('launchesStorage', JSON.stringify(favorites));
+                dispatch(getFavoritesLaunchesFromLocalStorage());
+                if (favorites.length === 10) {
+                    dispatch(errorRequest({ isError: true, message: 'You have reached the maximum number of 10 items in the FAVORITES folder' }));
+                }
+            }
+        }
+    } else {
+        const preparedData = [getState().launches.selectedLaunch];
+        localStorage.setItem('launchesStorage', JSON.stringify(preparedData));
+    }
+}
+
+export const removeLaunchFromFavorites = (id: string): ThunkAction<
+    Promise<void>,
+    any,
+    RootState,
+    ErrorRequestAction | SetSelectedLaunchAction
+> => async (dispatch, getState) => {
+    const stringFavorites = localStorage.getItem('launchesStorage');
+    if (stringFavorites !== null) {
+        let favorites: Launch[] = JSON.parse(stringFavorites);
+        favorites = favorites.filter((item: Launch) => item.id !== id);
+        localStorage.setItem('launchesStorage', JSON.stringify(favorites));
+        if (getState().launches.selectedLaunch.id === id) {
+            dispatch(setLaunch(null));
+        }
+        dispatch(getFavoritesLaunchesFromLocalStorage());
+    } else {
+        dispatch(errorRequest({ isError: true, message: "Current Favorites item not exist in storage" }));
+    }
+}
+
+export const getFavoritesLaunchesFromLocalStorage = (): ThunkAction<
+    Promise<void>,
+    any,
+    RootState,
+    LoadLaunchesAction
+> => async (dispatch, getState) => {
+    const stringFavorites = localStorage.getItem('launchesStorage');
+    if (stringFavorites !== null) {
+        let favorites: Launch[] = JSON.parse(stringFavorites);
+        dispatch(loadLaunches(favorites))
+    }
+}
