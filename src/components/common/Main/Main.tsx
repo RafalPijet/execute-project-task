@@ -23,6 +23,7 @@ const Main: React.FC<Props> = (props) => {
       }
     }
     dispatch(resetRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error.isError]);
 
   return (

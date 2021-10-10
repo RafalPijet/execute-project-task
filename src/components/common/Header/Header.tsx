@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Grid,
@@ -31,6 +32,7 @@ import { Launch } from '../../../globalTypes';
 const Header: React.FC<Props> = (props) => {
   const { isContent } = props;
   const classes = useStyles();
+  const location = useLocation();
   const dispatch = useDispatch();
   const isPending = useSelector(getPending);
   const launches = useSelector(getLaunches);
@@ -82,6 +84,13 @@ const Header: React.FC<Props> = (props) => {
   useEffect(() => {
     setSelectedLaunches(launches);
   }, [launches]);
+
+  useEffect(() => {
+    if (isSearch && location.pathname === '/content') {
+      handleClickAway();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLaunch]);
 
   const favoritesButtonHandling = () => {
     setIsFavoritesOpen(!isFavoritesOpen);
