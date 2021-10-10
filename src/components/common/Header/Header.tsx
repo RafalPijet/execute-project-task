@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { Grid, FilledInput, IconButton } from '@material-ui/core';
 import {
+  Grid,
+  FilledInput,
+  IconButton,
   Popper,
   Grow,
   Paper,
   MenuList,
   ClickAwayListener,
   Typography,
-} from '@mui/material';
+} from '@material-ui/core';
 import { Search, Add, FavoriteBorder } from '@material-ui/icons';
 import AppBar from '@material-ui/core/AppBar';
 import SelectMenuItem from '../SelectMenuItem/SelectMenuItem';
@@ -73,7 +75,7 @@ const Header: React.FC<Props> = (props) => {
       const result = favorites.find(
         (item: Launch) => item.id === selectedLaunch.id
       );
-      setAddIsDisabled(result !== undefined || favorites.length >= 10);
+      setAddIsDisabled(result !== undefined || favorites.length >= 5);
     }
   }, [selectedLaunch, favorites]);
 

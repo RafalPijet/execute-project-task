@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router';
 import { useDispatch } from 'react-redux';
+import classNames from 'classnames';
 import { Paper, Typography, Grid, Button } from '@material-ui/core';
 import { cutText } from '../../../functions';
 import { setLaunch } from '../../../redux/actions/launchesActions';
@@ -15,6 +16,11 @@ const LaunchItem: React.FC<Props> = (props) => {
   const dateFormat = new Date(date).toLocaleString();
   const [isRedirect, setIsRedirect] = useState<boolean>(false);
 
+  const rootClasses = classNames({
+    [classes.root]: true,
+    [classes.settingHeight]: !isContent,
+  });
+
   const selectItemHandling = () => {
     dispatch(setLaunch(launch));
     setTimeout(() => setIsRedirect(true), 500);
@@ -26,7 +32,7 @@ const LaunchItem: React.FC<Props> = (props) => {
 
   return (
     <Grid item xs={12} sm={12} md={4}>
-      <Paper className={classes.root} elevation={0}>
+      <Paper className={rootClasses} elevation={0}>
         <Grid container style={{ height: '100%' }}>
           <Grid item xs={12} sm={12} md={12} className={classes.columnBetween}>
             <div>

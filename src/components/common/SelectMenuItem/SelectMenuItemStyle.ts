@@ -6,7 +6,8 @@ export const useStyles = makeStyles(() => createStyles({
         width: '100%',
         justifyContent: 'space-between',
         margin: '5px 0',
-        position: 'relative'
+        position: 'relative',
+        paddingLeft: 0
     },
     rootFavorites: {
         margin: '10px 0px',

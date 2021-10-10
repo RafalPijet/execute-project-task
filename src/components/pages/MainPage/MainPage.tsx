@@ -55,8 +55,8 @@ const MainPage: React.FC = () => {
               01
             </IconButton>
             <IconButton
-              onClick={() => selectPageHandling(7)}
-              className={page === 7 ? classes.buttonSelected : classes.button}
+              onClick={() => selectPageHandling(16)}
+              className={page === 16 ? classes.buttonSelected : classes.button}
               disabled={isPending}
             >
               02

@@ -22,6 +22,15 @@ export const useStyles = makeStyles(() => createStyles({
             background: "rgba(0, 0, 0, 0.2)"
         },
     },
+    logoBox: {
+        "@media (min-width: 400px)": {
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        "@media (min-width: 1200px)": {
+            justifyContent: 'flex-start'
+        },
+    }
 }))
 
 export interface Props {

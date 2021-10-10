@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { MenuItem, Avatar, Typography, IconButton } from '@mui/material';
+import { MenuItem, Avatar, Typography, IconButton } from '@material-ui/core';
 import { DeleteForever } from '@material-ui/icons';
 import {
   setLaunch,

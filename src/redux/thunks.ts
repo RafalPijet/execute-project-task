@@ -32,7 +32,6 @@ export const getLaunchesRequest = (page: number): ThunkAction<
     dispatch(resetLaunches([]));
 
     try {
-        // await new Promise(resolve => setTimeout(resolve, 5000))
         const res: AxiosResponse = await axios.get(
             `https://api.spacex.land/rest/launches?limit=6&offset=${page * 2}`
         );
@@ -49,19 +48,29 @@ export const getLaunchesRequest = (page: number): ThunkAction<
             });
             result.forEach(async (item: Launch) => {
                 if (item.images.length) {
-                    await new Promise(resolve => setTimeout(resolve, 300))
-                    const response: AxiosResponse = await axios.get(
-                        `https://api.spacex.land/rest/ship/${item.images[0].id}`
-                    );
-                    let fechedShip: any = response.data;
-                    if (fechedShip) {
-                        let image = {
-                            id: item.id,
-                            name: fechedShip.name,
-                            image: fechedShip.image,
+                    try {
+                        const response: AxiosResponse = await axios.get(
+                            `https://api.spacex.land/rest/ship/${item.images[0].id}`
+                        );
+                        let fechedShip: any = response.data;
+                        if (fechedShip) {
+                            let image = {
+                                id: item.id,
+                                name: fechedShip.name,
+                                image: fechedShip.image,
+                            }
+                            item.images = [image];
+                            dispatch(addLaunch(item))
                         }
-                        item.images = [image];
-                        dispatch(addLaunch(item))
+                    } catch (err: any) {
+                        if (err.response !== undefined) {
+                            err.response.data.message ?
+                                dispatch(errorRequest({ isError: true, message: err.response.data.message })) :
+                                dispatch(errorRequest({ isError: true, message: 'Coś poszło nie tak!' }));
+                        } else {
+                            dispatch(errorRequest({ isError: true, message: 'Coś poszło nie tak!' }));
+                        }
+                        dispatch(stopRequest());
                     }
                 } else {
                     dispatch(addLaunch(item))
@@ -70,6 +79,7 @@ export const getLaunchesRequest = (page: number): ThunkAction<
         }
         dispatch(stopRequest());
     } catch (err: any) {
+        console.log(err.response.data.message)
         if (err.response !== undefined) {
             err.response.data.message ?
                 dispatch(errorRequest({ isError: true, message: err.response.data.message })) :
@@ -89,7 +99,7 @@ export const addLaunchToFavorites = (): ThunkAction<
     const stringFavorites = localStorage.getItem('launchesStorage');
     if (stringFavorites !== null) {
         let favorites: Launch[] = JSON.parse(stringFavorites);
-        if (favorites.length < 10) {
+        if (favorites.length < 5) {
             const currentLaunch = getState().launches.selectedLaunch
             const result = favorites.find((item: Launch) => item.id === currentLaunch.id);
             if (result === undefined) {
@@ -99,14 +109,15 @@ export const addLaunchToFavorites = (): ThunkAction<
                 ];
                 localStorage.setItem('launchesStorage', JSON.stringify(favorites));
                 dispatch(getFavoritesLaunchesFromLocalStorage());
-                if (favorites.length === 10) {
-                    dispatch(errorRequest({ isError: true, message: 'You have reached the maximum number of 10 items in the FAVORITES folder' }));
+                if (favorites.length === 5) {
+                    dispatch(errorRequest({ isError: true, message: 'You have reached the maximum number of 5 items in the FAVORITES folder' }));
                 }
             }
         }
     } else {
         const preparedData = [getState().launches.selectedLaunch];
         localStorage.setItem('launchesStorage', JSON.stringify(preparedData));
+        dispatch(getFavoritesLaunchesFromLocalStorage());
     }
 }
 
@@ -121,8 +132,10 @@ export const removeLaunchFromFavorites = (id: string): ThunkAction<
         let favorites: Launch[] = JSON.parse(stringFavorites);
         favorites = favorites.filter((item: Launch) => item.id !== id);
         localStorage.setItem('launchesStorage', JSON.stringify(favorites));
-        if (getState().launches.selectedLaunch.id === id) {
-            dispatch(setLaunch(null));
+        if (getState().launches.selectedLaunch !== null) {
+            if (getState().launches.selectedLaunch.id === id) {
+                dispatch(setLaunch(null));
+            }
         }
         dispatch(getFavoritesLaunchesFromLocalStorage());
     } else {

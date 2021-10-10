@@ -12,15 +12,29 @@ export const useStyles = makeStyles(() => createStyles({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
+    },
+    settingHeight: {
         height: 500
     },
     imageBox: {
         border: `2px solid ${secondaryColor}`,
         borderRadius: 25,
-        minWidth: 300,
-        minHeight: 200,
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
+        "@media (min-width: 320px)": {
+            minWidth: 250,
+            minHeight: 200,
+        },
+        "@media (min-width: 768px)": {
+            minHeight: 300,
+        },
+        "@media (min-width: 992px)": {
+            minHeight: 200,
+        },
+        "@media (min-width: 1200px)": {
+            minHeight: 200,
+            minWidth: 300
+        },
     },
     date: {
         color: 'rgba(255, 255, 255, .5)',
